@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{2B051429-AE58-4DFC-BB1E-9725C18C85F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService.Application", "OrdersService.Application\OrdersService.Application.csproj", "{9609160E-DF2A-406E-A8A5-101D22C3D746}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersService.Application", "OrdersService.Application\OrdersService.Application.csproj", "{9609160E-DF2A-406E-A8A5-101D22C3D746}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService.Domain", "OrdersService.Domain\OrdersService.Domain.csproj", "{2A2F4765-BB94-413E-86E4-136D798C2696}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersService.Domain", "OrdersService.Domain\OrdersService.Domain.csproj", "{2A2F4765-BB94-413E-86E4-136D798C2696}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService.Persistance", "OrdersService.Persistance\OrdersService.Persistance.csproj", "{26933CBA-4622-4387-B80E-819088114B58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersService.Persistance", "OrdersService.Persistance\OrdersService.Persistance.csproj", "{26933CBA-4622-4387-B80E-819088114B58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService.WebApi", "OrdersService.WebApi\OrdersService.WebApi.csproj", "{8A8BD7C5-DAAA-43DE-A978-B8DCED33D2E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersService.WebApi", "OrdersService.WebApi\OrdersService.WebApi.csproj", "{8A8BD7C5-DAAA-43DE-A978-B8DCED33D2E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
