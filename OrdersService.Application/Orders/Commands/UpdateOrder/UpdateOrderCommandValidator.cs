@@ -14,7 +14,6 @@ namespace OrdersService.Application.Orders.Commands.UpdateOrder
         {
             RuleFor(createOrderCommand => createOrderCommand.Id).NotEmpty();
             RuleFor(createOrderCommand => createOrderCommand.Lines).NotEmpty();
-            RuleFor(createOrderCommand => createOrderCommand.Status).NotEmpty();
 
             RuleForEach(createOrderCommand => createOrderCommand.Lines).NotEmpty().SetValidator(new OrderLineValidator());
         }

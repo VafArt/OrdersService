@@ -22,7 +22,9 @@ namespace OrdersService.Application.Orders.Commands.UpdateOrder
 
         public async Task<Order> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = await _dbContext.Orders.FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
+            var order = await _dbContext.Orders
+                .Include(order => order.Lines)
+                .FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
             if (order == null) throw new NotFoundException(nameof(Order), request.Id);
 
             if (!(order.Status == OrderStatus.New || order.Status == OrderStatus.AwaitingPayment)) throw new OrderChangeIsForbiddenException(order.Status);
