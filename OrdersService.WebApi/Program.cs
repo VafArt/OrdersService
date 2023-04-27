@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using OrdersService.Application;
 using OrdersService.Application.Common.Abstractions;
 using OrdersService.Application.Common.JsonConverters;
@@ -5,6 +7,7 @@ using OrdersService.Application.Common.Mappings;
 using OrdersService.Persistance;
 using OrdersService.WebApi.Middleware;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,13 +37,37 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
+
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     try
     {
         var dbContext = serviceProvider.GetRequiredService<OrdersServiceDbContext>();
-        DbInitializer.Initialize(dbContext);
+        var identityDbContext = serviceProvider.GetRequiredService<OrdersServiceIdentityDbContext>();
+        DbInitializer.Initialize(dbContext, identityDbContext);
     }
     catch (Exception ex)
     {
@@ -52,6 +79,10 @@ var app = builder.Build();
 
 app.UseCustomExceptionHandler();
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 

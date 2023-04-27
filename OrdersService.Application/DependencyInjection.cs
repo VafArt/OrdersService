@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using OrdersService.Application.Common.Behaviors;
+using OrdersService.Application.Common.Services.Token;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace OrdersService.Application
             services.AddValidatorsFromAssemblies(new[] { Assembly.GetExecutingAssembly() });
             services.AddTransient(typeof(IPipelineBehavior<,>),
                 typeof(ValidationBehavior<,>));
+
+            services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }
