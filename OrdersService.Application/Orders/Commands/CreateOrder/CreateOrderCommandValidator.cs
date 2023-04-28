@@ -1,12 +1,5 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
 using OrdersService.Application.Common.Validators;
-using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Application.Orders.Commands.CreateOrder
 {

@@ -1,32 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OrdersService.Application.Common.Abstractions;
+﻿using AutoMapper;
 using OrdersService.Application.Common.Abstractions.CQRS;
 using OrdersService.Application.Common.Exceptions;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrdersService.Domain.Repositories;
 
 namespace OrdersService.Application.Orders.Queries.GetOrder
 {
-    public sealed class GetOrderQueryHandler : IQueryHandler<GetOrderQuery, Order>
+    public sealed class GetOrderQueryHandler : IQueryHandler<GetOrderQuery, OrderVm>
     {
-        private readonly IOrdersServiceDbContext _dbContext;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public GetOrderQueryHandler(IOrdersServiceDbContext dbContext)
+        public GetOrderQueryHandler(IOrderRepository orderRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _orderRepository = orderRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<Order> Handle(GetOrderQuery request, CancellationToken cancellationToken)
+        public async Task<OrderVm> Handle(GetOrderQuery request, CancellationToken cancellationToken)
         {
-            var order = await _dbContext.Orders
-                .Include(order => order.Lines)
-                .FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
+            var order = await _orderRepository.GetByIdWithOrderLinesAsync(request.Id, cancellationToken);
             if (order == null) throw new NotFoundException(nameof(Order), request.Id);
-            return order;
+            order.Lines = order.Lines.Reverse().ToList();
+            return _mapper.Map<OrderVm>(order);
         }
     }
 }

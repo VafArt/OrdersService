@@ -2,22 +2,17 @@ using AutoMapper;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Application.Orders.Commands.CreateOrder;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace OrdersService.WebApi.Models.Order
 {
     public class CreateOrderDto : IMapWith<CreateOrderCommand>
     {
         [JsonPropertyName("id")]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         [JsonPropertyName("lines")]
-        public List<OrderLine>? Lines { get; set; }
+        public List<OrderLineDto> Lines { get; set; }
 
         public void Mapping(Profile profile)
         {

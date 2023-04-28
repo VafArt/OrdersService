@@ -1,29 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OrdersService.Application.Common.Abstractions;
+﻿using AutoMapper;
 using OrdersService.Application.Common.Abstractions.CQRS;
 using OrdersService.Application.Common.Exceptions;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrdersService.Domain.Repositories;
 
 namespace OrdersService.Application.Orders.Commands.CreateOrder
 {
-    public sealed class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, Order>
+    public sealed class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, OrderVm>
     {
-        private readonly IOrdersServiceDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateOrderCommandHandler(IOrdersServiceDbContext dbContext)
+        private readonly IOrderRepository _orderRepository;
+
+        private readonly IMapper _mapper;
+
+        public CreateOrderCommandHandler(IUnitOfWork unitOfWork, IOrderRepository orderRepository, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
+            _orderRepository = orderRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<OrderVm> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = await _dbContext.Orders
-                .FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
+            var order = await _orderRepository.GetByIdAsync(request.Id);
             if (order != null) throw new AlreadyExistsException(nameof(Order), request.Id);
 
             order = new Order()
@@ -34,10 +34,9 @@ namespace OrdersService.Application.Orders.Commands.CreateOrder
                 Lines = request.Lines,
             };
 
-            _dbContext.Orders.Add(order);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return order;
+            _orderRepository.Add(order);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<OrderVm>(order);
         }
     }
 }
