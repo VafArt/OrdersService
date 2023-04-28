@@ -1,30 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OrdersService.Application.Common.Abstractions;
+﻿using AutoMapper;
 using OrdersService.Application.Common.Abstractions.CQRS;
 using OrdersService.Application.Common.Exceptions;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrdersService.Domain.Repositories;
 
 namespace OrdersService.Application.Orders.Commands.UpdateOrder
 {
-    public sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCommand, Order>
+    public sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCommand, OrderVm>
     {
-        private readonly IOrdersServiceDbContext _dbContext;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UpdateOrderCommandHandler(IOrdersServiceDbContext dbContext)
+        public UpdateOrderCommandHandler(IOrderRepository orderRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _orderRepository = orderRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<Order> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<OrderVm> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = await _dbContext.Orders
-                .Include(order => order.Lines)
-                .FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
+            var order = await _orderRepository.GetByIdWithOrderLinesAsync(request.Id, cancellationToken);
             if (order == null) throw new NotFoundException(nameof(Order), request.Id);
 
             if (!(order.Status == OrderStatus.New || order.Status == OrderStatus.AwaitingPayment)) throw new OrderChangeIsForbiddenException(order.Status);
@@ -32,8 +29,8 @@ namespace OrdersService.Application.Orders.Commands.UpdateOrder
             order.Status = request.Status;
             order.Lines = request.Lines;
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return order;
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<OrderVm>(order);
         }
     }
 }

@@ -1,17 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
-using OrdersService.Application.Common.Abstractions;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Persistance
 {
-    public class OrdersServiceDbContext : DbContext, IOrdersServiceDbContext
+    public class OrdersServiceDbContext : DbContext
     {
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }

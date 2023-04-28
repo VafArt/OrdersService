@@ -1,5 +1,4 @@
 using OrdersService.Application;
-using OrdersService.Application.Common.Abstractions;
 using OrdersService.Application.Common.JsonConverters;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Persistance;
@@ -12,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-    config.AddProfile(new AssemblyMappingProfile(typeof(IOrdersServiceDbContext).Assembly));
+    config.AddProfile(new AssemblyMappingProfile(typeof(OrdersServiceDbContext).Assembly));
+    config.AddProfile(new AssemblyMappingProfile(typeof(AssemblyMappingProfile).Assembly));
 });
 
 builder.Services.AddApplication();
@@ -20,7 +20,7 @@ builder.Services.AddPersistance(builder.Configuration);
 builder.Services.AddControllers().AddJsonOptions(config=>
 {
     config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    config.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter("yyyy-MM-dd HH:mm:ss"));
+    config.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter("yyyy-MM-dd HH:mm.ss"));
     config.JsonSerializerOptions.AllowTrailingCommas = true;
 });
 

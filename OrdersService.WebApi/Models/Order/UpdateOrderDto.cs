@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using OrdersService.Application.Common.Mappings;
-using OrdersService.Application.Orders.Commands.CreateOrder;
 using OrdersService.Application.Orders.Commands.UpdateOrder;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.WebApi.Models.Order
 {
@@ -21,7 +15,7 @@ namespace OrdersService.WebApi.Models.Order
         public OrderStatus? Status { get; set; }
 
         [FromBody]
-        public ICollection<OrderLine>? Lines { get; set; } = new List<OrderLine>();
+        public ICollection<OrderLineDto>? Lines { get; set; } = new List<OrderLineDto>();
 
         public void Mapping(Profile profile)
         {

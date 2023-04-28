@@ -1,34 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OrdersService.Application.Common.Abstractions;
-using OrdersService.Application.Common.Abstractions.CQRS;
+﻿using OrdersService.Application.Common.Abstractions.CQRS;
 using OrdersService.Application.Common.Exceptions;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrdersService.Domain.Repositories;
 
 namespace OrdersService.Application.Orders.Commands.DeleteOrder
 {
     public sealed class DeleteOrderCommandHandler : ICommandHandler<DeleteOrderCommand>
     {
-        private readonly IOrdersServiceDbContext _dbContext;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteOrderCommandHandler(IOrdersServiceDbContext dbContext)
+        public DeleteOrderCommandHandler(IOrderRepository orderRepository, IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _orderRepository = orderRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = await _dbContext.Orders.FirstOrDefaultAsync(order => order.Id == request.Id, cancellationToken);
+            var order = await _orderRepository.GetByIdAsync(request.Id);
             if(order == null) throw new NotFoundException(nameof(Order), request.Id);
 
             if (order.Status == OrderStatus.SentForDelivery || order.Status == OrderStatus.Delivered || order.Status == OrderStatus.Completed) throw new OrderDeleteIsForbiddenException(order.Status);
 
-            _dbContext.Orders.Remove(order);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            _orderRepository.Remove(order);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

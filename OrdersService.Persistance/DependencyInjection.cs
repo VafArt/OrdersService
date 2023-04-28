@@ -1,12 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OrdersService.Application.Common.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrdersService.Domain.Repositories;
+using OrdersService.Persistance.Repositories;
 
 namespace OrdersService.Persistance
 {
@@ -20,8 +16,9 @@ namespace OrdersService.Persistance
             {
                 options.UseNpgsql(defaultConnection);
             });
-            services.AddScoped<IOrdersServiceDbContext>(provider =>
-            provider.GetService<OrdersServiceDbContext>());
+
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
