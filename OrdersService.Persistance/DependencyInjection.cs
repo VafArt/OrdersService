@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrdersService.Application.Authentication;
 using OrdersService.Application.Common.Abstractions;
+using OrdersService.Domain.Repositories;
+using OrdersService.Persistance.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +33,8 @@ namespace OrdersService.Persistance
                 .AddEntityFrameworkStores<OrdersServiceIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddScoped<IOrdersServiceDbContext>(provider =>
-            provider.GetService<OrdersServiceDbContext>());
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
