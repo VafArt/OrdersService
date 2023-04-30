@@ -6,7 +6,7 @@ using OrdersService.Domain.Repositories;
 
 namespace OrdersService.Application.Orders.Commands.UpdateOrder
 {
-    public sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCommand, OrderVm>
+    internal sealed class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCommand, OrderVm>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;

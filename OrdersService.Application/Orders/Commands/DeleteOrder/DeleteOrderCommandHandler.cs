@@ -5,7 +5,7 @@ using OrdersService.Domain.Repositories;
 
 namespace OrdersService.Application.Orders.Commands.DeleteOrder
 {
-    public sealed class DeleteOrderCommandHandler : ICommandHandler<DeleteOrderCommand>
+    internal sealed class DeleteOrderCommandHandler : ICommandHandler<DeleteOrderCommand>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;
