@@ -57,6 +57,7 @@ namespace OrdersService.Tests.Orders.GetOrderTests
 
             //Act
             var result = async () => await handler.Handle(query, default);
+
             //Assert
             await result.Should().ThrowAsync<NotFoundException>();
         }

@@ -12,7 +12,7 @@ namespace OrdersService.Application.Common.Exceptions
         public IEnumerable<IdentityError> Errors { get; set; }
 
         public RegistrationException(IEnumerable<IdentityError> errors)
-            : base("Некорректные данные пользователя! Проверьте данные и попробуйте снова.")
+            : base("Invalid user credentials! Check credentials and try again!")
         {
             Errors = errors;
         }

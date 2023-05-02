@@ -24,7 +24,7 @@ namespace OrdersService.Application.Orders.Commands.CreateOrder
         public async Task<OrderVm> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             var order = await _orderRepository.GetByIdAsync(request.Id, cancellationToken);
-            if (order != null) throw new AlreadyExistsException(nameof(Order), request.Id);
+            if (order != null) throw new AlreadyExistsException(nameof(Order), request.Id.ToString());
 
             order = new Order()
             {

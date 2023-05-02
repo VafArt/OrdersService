@@ -22,7 +22,7 @@ namespace OrdersService.Application.Orders.Queries.GetOrder
         public async Task<OrderVm> Handle(GetOrderQuery request, CancellationToken cancellationToken)
         {
             var order = await _orderRepository.GetByIdWithOrderLinesAsync(request.Id, cancellationToken);
-            if (order == null) throw new NotFoundException(nameof(Order), request.Id);
+            if (order == null) throw new NotFoundException(nameof(Order), request.Id.ToString());
             order.Lines = order.Lines.Reverse().ToList();
             return _mapper.Map<OrderVm>(order);
         }

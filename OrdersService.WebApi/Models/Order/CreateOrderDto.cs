@@ -1,4 +1,5 @@
 using AutoMapper;
+using OrdersService.Application.Common.JsonConverters;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Application.Orders.Commands.CreateOrder;
 using OrdersService.Domain;
@@ -9,10 +10,11 @@ namespace OrdersService.WebApi.Models.Order
     public class CreateOrderDto : IMapWith<CreateOrderCommand>
     {
         [JsonPropertyName("id")]
-        public Guid Id { get; set; }
+        [JsonConverter(typeof(JsonStringGuidConverter))]
+        public Guid? Id { get; set; }
 
         [JsonPropertyName("lines")]
-        public List<OrderLineDto> Lines { get; set; }
+        public List<OrderLineDto>? Lines { get; set; }
 
         public void Mapping(Profile profile)
         {

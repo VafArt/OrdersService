@@ -29,13 +29,13 @@ namespace OrdersService.Application.Authentication.Commands.RefreshToken
         {
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(request.AccessToken);
-            if (principal == null) throw new InvalidTokenException();
+            if (principal == null) throw new InvalidTokenException(request.AccessToken);
 
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
 
             if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new InvalidTokenException();
+                throw new InvalidTokenException(request.AccessToken);
             }
 
             var newAccessToken = _tokenService.GenerateAccessToken(principal.Claims.ToList());

@@ -22,9 +22,9 @@ namespace OrdersService.Application.Orders.Commands.UpdateOrder
         public async Task<OrderVm> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
             var order = await _orderRepository.GetByIdWithOrderLinesAsync(request.Id, cancellationToken);
-            if (order == null) throw new NotFoundException(nameof(Order), request.Id);
+            if (order == null) throw new NotFoundException(nameof(Order), request.Id.ToString());
 
-            if (!(order.Status == OrderStatus.New || order.Status == OrderStatus.AwaitingPayment)) throw new OrderChangeIsForbiddenException(order.Status);
+            if (!(order.Status == OrderStatus.New || order.Status == OrderStatus.AwaitingPayment)) throw new OrderChangeIsForbiddenException(request.Id.ToString(), order.Status);
 
             order.Status = request.Status;
             order.Lines = request.Lines;

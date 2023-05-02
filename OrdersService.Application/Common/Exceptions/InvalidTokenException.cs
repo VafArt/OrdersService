@@ -8,10 +8,11 @@ namespace OrdersService.Application.Common.Exceptions
 {
     public class InvalidTokenException : Exception
     {
-        public InvalidTokenException()
-            :base("Некорректный токен")
+        public string Token { get; set; }
+        public InvalidTokenException(string token)
+            :base("Invalid token")
         {
-
+            Token = token;
         }
     }
 }
