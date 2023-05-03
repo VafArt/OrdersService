@@ -38,7 +38,7 @@ namespace OrdersService.WebApi.Controllers
         /// <responce code="400">If validation error occurred</responce>
         [Authorize]
         [HttpPost]
-        [SwaggerResponseExample(200, typeof(OrderVmExample))]
+        [SwaggerResponseExample(201, typeof(OrderVmExample))]
         [SwaggerRequestExample(typeof(CreateOrderDto), typeof(CreateOrderDtoExample))]
         public async Task<ActionResult<OrderVm>> Create([FromBody] CreateOrderDto createOrderDto)
         {

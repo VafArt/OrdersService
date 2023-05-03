@@ -6,6 +6,7 @@ using OrdersService.Application.Common.JsonConverters;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Persistance;
 using OrdersService.WebApi.Middleware;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
@@ -36,6 +37,9 @@ builder.Services.AddSwaggerGen(config =>
         }}, new List<string>()}
     });
 });
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 builder.Services.AddAutoMapper(config =>
@@ -102,12 +106,17 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
     }
 }
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 app.UseSwagger();
 app.UseSwaggerUI(config =>
 {
-    config.SwaggerEndpoint("/swagger/v1/swagger.json", "Baha'i Prayers API");
+    config.SwaggerEndpoint("/swagger/v1/swagger.json", "Orders Service Api");
     config.InjectStylesheet("/swagger/custom.css");
     config.RoutePrefix = String.Empty;
 });

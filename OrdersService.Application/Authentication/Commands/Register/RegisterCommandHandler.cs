@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using OrdersService.Application.Common.Abstractions.CQRS;
 using OrdersService.Application.Common.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OrdersService.Application.Authentication.Commands.Register
 {
-    public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand>
+    public sealed class RegisterCommandHandler : ICommandHandler<RegisterCommand>
     {
         private readonly UserManager<ApplicationUser> _userManager;
 

@@ -62,7 +62,12 @@ namespace OrdersService.WebApi.Controllers
         [Route("registration")]
         public async Task<ActionResult> Register([FromBody] RegisterDto model)
         {
-            var registerCommand = new RegisterCommand(model.Username, model.Email, model.Password);
+            var registerCommand = new RegisterCommand()
+            {
+                Email = model.Email,
+                Password = model.Password,
+                Username = model.Username,
+            };
             await Mediator.Send(registerCommand);
             return Ok();
         }
@@ -79,7 +84,12 @@ namespace OrdersService.WebApi.Controllers
         [Route("registration-admin")]
         public async Task<ActionResult> RegisterAdmin([FromBody] RegisterDto model)
         {
-            var registerAdminCommand = new RegisterAdminCommand(model.Username, model.Email, model.Password);
+            var registerAdminCommand = new RegisterAdminCommand()
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password
+            };
             await Mediator.Send(registerAdminCommand);
             return Ok();
         }

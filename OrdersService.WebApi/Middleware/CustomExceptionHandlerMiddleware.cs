@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
+using MediatR;
 using OrdersService.Application.Common.Exceptions;
 using OrdersService.WebApi.Models.Exceptions;
+using Serilog;
 using System.Net;
 using System.Text.Json;
 
