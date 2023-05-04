@@ -45,7 +45,7 @@ namespace OrdersService.Application.Common.Services.Token
             }
         }
 
-        public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
+        public ClaimsPrincipal? GetPrincipalFromToken(string? token)
         {
             var tokenValidationParameters = new TokenValidationParameters()
             {
@@ -61,7 +61,6 @@ namespace OrdersService.Application.Common.Services.Token
             if (securityToken is not JwtSecurityToken jwtSecurityToken || 
                 !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 throw new SecurityTokenException("Invalid token");
-
             return principal;
         }
     }

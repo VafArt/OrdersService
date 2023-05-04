@@ -28,7 +28,7 @@ namespace OrdersService.Application.Authentication.Commands.RefreshToken
         public async  Task<RefreshTokenVm> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
 
-            var principal = _tokenService.GetPrincipalFromExpiredToken(request.AccessToken);
+            var principal = _tokenService.GetPrincipalFromToken(request.AccessToken);
             if (principal == null) throw new InvalidTokenException(request.AccessToken);
 
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);

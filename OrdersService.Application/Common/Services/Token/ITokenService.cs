@@ -12,6 +12,6 @@ namespace OrdersService.Application.Common.Services.Token
     {
         JwtSecurityToken GenerateAccessToken(IEnumerable<Claim> claims);
         string GenerateRefreshToken();
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+        ClaimsPrincipal GetPrincipalFromToken(string token);
     }
 }

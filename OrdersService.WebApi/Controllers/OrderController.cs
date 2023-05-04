@@ -56,7 +56,7 @@ namespace OrdersService.WebApi.Controllers
         /// <response code="200">Success</response>
         /// <response code="401">If the user is unauthorized</response>
         /// <response code="404">If order is not found</response>
-        /// <response code="403">If order status is New or AwaitingPayment</response>
+        /// <response code="403">If order status is not New or AwaitingPayment</response>
         /// <responce code="400">If validation error occurred</responce>
         [SwaggerResponseExample(200, typeof(OrderVmExample))]
         [SwaggerRequestExample(typeof(UpdateOrderDto), typeof(UpdateOrderDtoExample))]

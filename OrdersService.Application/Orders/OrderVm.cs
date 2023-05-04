@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OrdersService.Application.Common.JsonConverters;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Domain;
 using System.Text.Json.Serialization;
@@ -10,9 +11,11 @@ namespace OrdersService.Application.Orders
         public Guid Id { get; set; }
 
         [JsonPropertyName("status")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public OrderStatus Status { get; set; }
 
         [JsonPropertyName("created")]
+        [JsonConverter(typeof(CustomDateTimeConverter))]
         public DateTime DateCreated { get; set; }
 
         [JsonPropertyName("lines")]
