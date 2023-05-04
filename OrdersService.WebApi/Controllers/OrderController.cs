@@ -17,7 +17,6 @@ using System.Net;
 
 namespace OrdersService.WebApi.Controllers
 {
-    [Route("orders")]
     public class OrderController : BaseController
     {
         private readonly IMapper _mapper;
@@ -37,7 +36,7 @@ namespace OrdersService.WebApi.Controllers
         /// <responce code="409">If the order already exists</responce>
         /// <responce code="400">If validation error occurred</responce>
         [Authorize]
-        [HttpPost]
+        [HttpPost(ApiRoutes.Order.Create)]
         [SwaggerResponseExample(201, typeof(OrderVmExample))]
         [SwaggerRequestExample(typeof(CreateOrderDto), typeof(CreateOrderDtoExample))]
         public async Task<ActionResult<OrderVm>> Create([FromBody] CreateOrderDto createOrderDto)
@@ -61,7 +60,7 @@ namespace OrdersService.WebApi.Controllers
         [SwaggerResponseExample(200, typeof(OrderVmExample))]
         [SwaggerRequestExample(typeof(UpdateOrderDto), typeof(UpdateOrderDtoExample))]
         [Authorize]
-        [HttpPut("{id}")]
+        [HttpPut(ApiRoutes.Order.Update + "{id}")]
         public async Task<ActionResult<OrderVm>> Update(UpdateOrderDto updateOrderDto, Guid id)
         {
             updateOrderDto.Id = id;
@@ -84,7 +83,7 @@ namespace OrdersService.WebApi.Controllers
         /// <response code="403">If order status is SentForDelivery, Delivered or Completed</response>
         /// <responce code="400">If validation error occurred</responce>
         [Authorize]
-        [HttpDelete("{id}")]
+        [HttpDelete(ApiRoutes.Order.Delete + "{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
             var deleteOrderCommand = new DeleteOrderCommand(id);
@@ -106,7 +105,7 @@ namespace OrdersService.WebApi.Controllers
         /// <response code="404">If order is not found</response>
         /// <responce code="400">If validation error occurred</responce>
         [Authorize]
-        [HttpGet("{id}")]
+        [HttpGet(ApiRoutes.Order.Get + "{id}")]
         [SwaggerResponseExample(200, typeof(OrderVmExample))]
         public async Task<ActionResult<OrderVm>> Get(Guid id)
         {
