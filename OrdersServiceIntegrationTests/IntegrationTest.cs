@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -17,26 +18,42 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Testcontainers.PostgreSql;
 
 namespace OrdersService.IntegrationTests
 {
-    public class IntegrationTest
+    public abstract class IntegrationTest : IAsyncLifetime
     {
         protected readonly HttpClient TestClient;
+
+        private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
+            .WithImage("postgres:latest")
+            .WithDatabase("ordersServiceDb")
+            .WithUsername("postgres")
+            .WithPassword("Asakura1")
+            .WithEnvironment("TZ", "Europe/Moscow")
+            .Build();
 
         protected IntegrationTest()
         {
             var appFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.ConfigureServices(services =>
+                    builder.ConfigureTestServices(services =>
                     {
-                        services.RemoveAll(typeof(OrdersServiceDbContext));
+                        var descriptor = services
+                        .SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<OrdersServiceDbContext>));
+                        if (descriptor is not null)
+                        {
+                            services.Remove(descriptor);
+                        }
+
                         services.AddDbContext<OrdersServiceDbContext>(options =>
                         {
-                            options.UseInMemoryDatabase("TestDb");
+                            options.UseNpgsql("Server=127.0.0.1;Port=5432;Database=ordersServiceDb;User Id=postgres;Password=Asakura1;");
                         });
                     });
+                    
                 });
             TestClient = appFactory.CreateClient();
         }
@@ -80,6 +97,16 @@ namespace OrdersService.IntegrationTests
             var loginResponseVm = await loginResponse.Content.ReadFromJsonAsync<LoginVm>();
 
             return loginResponseVm.AccessToken;
+        }
+
+        public async Task InitializeAsync()
+        {
+            await _dbContainer.StartAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _dbContainer.StopAsync();
         }
     }
 }

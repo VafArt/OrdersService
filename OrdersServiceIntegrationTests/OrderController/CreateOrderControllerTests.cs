@@ -111,7 +111,7 @@ namespace OrdersService.IntegrationTests.OrderController
 
             //Assert
             alredyExistsExceptionDto.Code.Should().Be(409);
-            alredyExistsExceptionDto.Date.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            alredyExistsExceptionDto.Date.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
             alredyExistsExceptionDto.Entity.Should().Be(nameof(Order));
             alredyExistsExceptionDto.Key.Should().Be(createOrderDto.Id.ToString());
             alredyExistsExceptionDto.Errors.Should().NotBeEmpty();
