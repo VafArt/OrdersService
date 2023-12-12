@@ -2,10 +2,15 @@
 {
     public class AlreadyExistsException : Exception
     {
-        public AlreadyExistsException(string name, object key)
-            : base($"Сущность \"{name}\" ({key}) уже существует")
-        {
+        public string Entity { get; set; }
 
+        public string Key { get; set; }
+
+        public AlreadyExistsException(string entity, string key)
+            : base($"\"{entity}\" ({key}) already exists")
+        {
+            Entity = entity;
+            Key = key;
         }
     }
 }

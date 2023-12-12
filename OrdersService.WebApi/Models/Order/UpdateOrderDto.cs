@@ -1,14 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using OrdersService.Application.Common.JsonConverters;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Application.Orders.Commands.UpdateOrder;
 using OrdersService.Domain;
+using System.Text.Json.Serialization;
 
 namespace OrdersService.WebApi.Models.Order
 {
     public class UpdateOrderDto : IMapWith<UpdateOrderCommand>
     {
         [FromQuery]
+        [JsonConverter(typeof(JsonStringGuidConverter))]
         public Guid? Id { get; set; }
 
         [FromBody]

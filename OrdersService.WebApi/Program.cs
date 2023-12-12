@@ -1,12 +1,48 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OrdersService.Application;
 using OrdersService.Application.Common.JsonConverters;
 using OrdersService.Application.Common.Mappings;
 using OrdersService.Persistance;
 using OrdersService.WebApi.Middleware;
+using Serilog;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+bool.TryParse(builder.Configuration["IsTestRun"], out var isTestRun);
+if (!isTestRun)
+{
+    builder.Services.AddSwaggerGen(config =>
+    {
+        config.ExampleFilters();
+        var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        config.IncludeXmlComments(xmlPath);
+
+        config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the bearer scheme",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey
+        });
+        config.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {new OpenApiSecurityScheme{Reference = new OpenApiReference
+        {
+            Id = "Bearer",
+            Type = ReferenceType.SecurityScheme
+        }}, new List<string>()}
+    });
+    });
+    builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
+}
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAutoMapper(config =>
 {
@@ -20,7 +56,7 @@ builder.Services.AddPersistance(builder.Configuration);
 builder.Services.AddControllers().AddJsonOptions(config=>
 {
     config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    config.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter("yyyy-MM-dd HH:mm.ss"));
+    config.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter());
     config.JsonSerializerOptions.AllowTrailingCommas = true;
 });
 
@@ -34,13 +70,37 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
+
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
+
 using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
     try
     {
         var dbContext = serviceProvider.GetRequiredService<OrdersServiceDbContext>();
-        DbInitializer.Initialize(dbContext);
+        var identityDbContext = serviceProvider.GetRequiredService<OrdersServiceIdentityDbContext>();
+        DbInitializer.Initialize(dbContext, identityDbContext);
     }
     catch (Exception ex)
     {
@@ -48,10 +108,30 @@ using (var scope = builder.Services.BuildServiceProvider().CreateScope())
     }
 }
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
+
+if (!isTestRun)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(config =>
+    {
+        config.SwaggerEndpoint("/swagger/v1/swagger.json", "Orders Service Api");
+        config.InjectStylesheet("/swagger/custom.css");
+        config.RoutePrefix = String.Empty;
+    });
+}
 
 app.UseCustomExceptionHandler();
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
@@ -61,3 +141,5 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
+
+public partial class Program { }

@@ -2,10 +2,15 @@
 {
     public class NotFoundException : Exception
     {
-        public NotFoundException(string name, object key)
-            : base($"Сущность \"{name}\" ({key}) не найдена.")
-        {
+        public string Entity { get; set; }
 
+        public string Key { get; set; }
+
+        public NotFoundException(string entity, string key)
+            : base($"\"{entity}\" ({key}) not found.")
+        {
+            Entity = entity;
+            Key = key;
         }
     }
 }

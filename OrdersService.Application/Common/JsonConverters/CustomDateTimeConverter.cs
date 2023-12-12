@@ -6,9 +6,9 @@ namespace OrdersService.Application.Common.JsonConverters
     public class CustomDateTimeConverter : JsonConverter<DateTime>
     {
         private readonly string Format;
-        public CustomDateTimeConverter(string format)
+        public CustomDateTimeConverter()
         {
-            Format = format;
+            Format = "yyyy-MM-dd HH:mm.ss";
         }
         public override void Write(Utf8JsonWriter writer, DateTime date, JsonSerializerOptions options)
             => writer.WriteStringValue(date.ToString(Format));
