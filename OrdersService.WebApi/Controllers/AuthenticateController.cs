@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OrdersService.Application.Authentication;
 using OrdersService.Application.Authentication.Commands.RefreshToken;
@@ -9,16 +8,10 @@ using OrdersService.Application.Authentication.Commands.RegisterAdmin;
 using OrdersService.Application.Authentication.Commands.Revoke;
 using OrdersService.Application.Authentication.Commands.RevokeAll;
 using OrdersService.Application.Authentication.Queries.Login;
-using OrdersService.Application.Common.Services.Token;
 using OrdersService.WebApi.Examples.Requests;
 using OrdersService.WebApi.Examples.Responses;
 using OrdersService.WebApi.Models.Authentication;
 using Swashbuckle.AspNetCore.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.WebApi.Controllers
 {

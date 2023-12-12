@@ -6,11 +6,6 @@ using OrdersService.Application.Orders;
 using OrdersService.Application.Orders.Commands.UpdateOrder;
 using OrdersService.Domain;
 using OrdersService.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Tests.Orders.UpdateOrderTests
 {

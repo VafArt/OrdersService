@@ -4,11 +4,6 @@ using OrdersService.Application.Common.Exceptions;
 using OrdersService.Application.Orders.Commands.DeleteOrder;
 using OrdersService.Domain;
 using OrdersService.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Tests.Orders.DeleteOrderTests
 {

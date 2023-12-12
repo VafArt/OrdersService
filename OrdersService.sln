@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{114CA892
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersService.Tests", "OrdersService.Tests\OrdersService.Tests.csproj", "{1A845E1B-8E86-4446-ADDD-335FD833E36E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersService.IntegrationTests", "OrdersServiceIntegrationTests\OrdersService.IntegrationTests.csproj", "{0423BB16-0451-49D1-9FD6-B105EAA02905}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersService.IntegrationTests", "OrdersServiceIntegrationTests\OrdersService.IntegrationTests.csproj", "{0423BB16-0451-49D1-9FD6-B105EAA02905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

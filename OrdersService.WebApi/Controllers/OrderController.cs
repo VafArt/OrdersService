@@ -1,19 +1,15 @@
 using AutoMapper;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrdersService.Application.Orders;
 using OrdersService.Application.Orders.Commands.CreateOrder;
 using OrdersService.Application.Orders.Commands.DeleteOrder;
 using OrdersService.Application.Orders.Commands.UpdateOrder;
 using OrdersService.Application.Orders.Queries.GetOrder;
-using OrdersService.Domain;
 using OrdersService.WebApi.Examples.Requests;
 using OrdersService.WebApi.Examples.Responses;
 using OrdersService.WebApi.Models.Order;
 using Swashbuckle.AspNetCore.Filters;
-using System.Net;
 
 namespace OrdersService.WebApi.Controllers
 {
@@ -43,7 +39,7 @@ namespace OrdersService.WebApi.Controllers
         {
             var createOrderCommand = _mapper.Map<CreateOrderCommand>(createOrderDto);
             var order = await Mediator.Send(createOrderCommand);
-            return Created("/orders",order);
+            return Created("/orders", order);
         }
 
         /// <summary>

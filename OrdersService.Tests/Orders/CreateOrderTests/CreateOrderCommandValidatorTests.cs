@@ -2,20 +2,11 @@
 using OrdersService.Application.Common.Validators;
 using OrdersService.Application.Orders.Commands.CreateOrder;
 using OrdersService.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Tests.Orders.CreateOrderTests
 {
     public class CreateOrderCommandValidatorTests
     {
-        // - невозможно создать заказ без строк
-        // - количество по строке заказа не может быть отрицательным
-        // - количество по строке заказа не может быть 0
-
         private readonly CreateOrderCommandValidator _validator;
 
         public CreateOrderCommandValidatorTests()
@@ -43,12 +34,12 @@ namespace OrdersService.Tests.Orders.CreateOrderTests
             //Arrange
             var orderLines = new List<OrderLine>()
             {
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 4,
                 },
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 5,

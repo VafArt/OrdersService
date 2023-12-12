@@ -4,13 +4,8 @@ using OrdersService.Domain;
 using OrdersService.WebApi;
 using OrdersService.WebApi.Models.Exceptions;
 using OrdersService.WebApi.Models.Order;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.IntegrationTests.OrderController
 {
@@ -33,6 +28,7 @@ namespace OrdersService.IntegrationTests.OrderController
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            exceptionDto.Errors.Should().NotBeNull();
             exceptionDto.Errors.Should().HaveCount(1);
             exceptionDto.Errors.First().Code.Should().Be(ExceptionCodes.ValidationError);
         }
@@ -47,18 +43,15 @@ namespace OrdersService.IntegrationTests.OrderController
                 Id = Guid.NewGuid(),
                 Lines = new List<OrderLineDto>
                 {
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 12,
                     },
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 10,
                     },
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 2,
                     }
@@ -86,18 +79,15 @@ namespace OrdersService.IntegrationTests.OrderController
                 Id = Guid.NewGuid(),
                 Lines = new List<OrderLineDto>
                 {
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 12,
                     },
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 10,
                     },
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 2,
                     }
@@ -127,18 +117,15 @@ namespace OrdersService.IntegrationTests.OrderController
                 Id = Guid.NewGuid(),
                 Lines = new List<OrderLineDto>
                 {
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 12,
                     },
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 10,
                     },
-                    new OrderLineDto
-                    {
+                    new() {
                         ProductId = Guid.NewGuid(),
                         Quantity = 2,
                     }

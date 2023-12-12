@@ -6,12 +6,6 @@ using OrdersService.Application.Orders;
 using OrdersService.Application.Orders.Commands.CreateOrder;
 using OrdersService.Domain;
 using OrdersService.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Tests.Orders.CreateOrderTests
 {
@@ -36,12 +30,12 @@ namespace OrdersService.Tests.Orders.CreateOrderTests
             //Arrange
             var orderLines = new List<OrderLine>()
             {
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 4,
                 },
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 5,
@@ -74,12 +68,12 @@ namespace OrdersService.Tests.Orders.CreateOrderTests
             var orderId = Guid.NewGuid();
             var orderLines = new List<OrderLine>()
             {
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 4,
                 },
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 5,
@@ -116,12 +110,12 @@ namespace OrdersService.Tests.Orders.CreateOrderTests
             var orderId = Guid.NewGuid();
             var orderLines = new List<OrderLine>()
             {
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 4,
                 },
-                new OrderLine()
+                new()
                 {
                     ProductId = Guid.NewGuid(),
                     Quantity = 5,

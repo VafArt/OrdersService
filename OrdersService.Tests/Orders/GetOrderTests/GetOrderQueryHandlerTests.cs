@@ -2,14 +2,10 @@
 using FluentAssertions;
 using Moq;
 using OrdersService.Application.Common.Exceptions;
+using OrdersService.Application.Orders;
 using OrdersService.Application.Orders.Queries.GetOrder;
 using OrdersService.Domain;
 using OrdersService.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrdersService.Tests.Orders.GetOrderTests
 {
@@ -26,6 +22,7 @@ namespace OrdersService.Tests.Orders.GetOrderTests
             _mapper = MapperGenerator.CreateMapper();
         }
 
+        [Fact]
         public async Task Handle_ShouldReturnOrderVm_WhenOrderExists()
         {
             //Arrange
@@ -35,6 +32,28 @@ namespace OrdersService.Tests.Orders.GetOrderTests
                 _orderRepositoryMock.Object,
                 _unitOfWorkMock.Object,
                 _mapper);
+            var orderLines = new List<OrderLine>()
+            {
+                new()
+                {
+                    ProductId = Guid.NewGuid(),
+                    Quantity = 4,
+                },
+                new()
+                {
+                    ProductId = Guid.NewGuid(),
+                    Quantity = 5,
+                }
+            };
+            var order = new Order
+            {
+                Id = orderId,
+                Status = OrderStatus.New,
+                DateCreated = DateTime.Now,
+                Lines = orderLines
+            };
+            _orderRepositoryMock.Setup(x => x.GetByIdWithOrderLinesAsync(orderId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(order);
 
             //Act
             var result = await handler.Handle(query, default);
@@ -42,9 +61,10 @@ namespace OrdersService.Tests.Orders.GetOrderTests
             result.Status.Should().BeOneOf(new[] {OrderStatus.New, OrderStatus.AwaitingPayment, OrderStatus.Paid, OrderStatus.SentForDelivery, OrderStatus.Delivered, OrderStatus.Completed} );
             result.Lines.Should().NotBeEmpty();
             result.Id.Should().Be(orderId);
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
+        [Fact]
         public async Task Handle_ShouldThrowNotFoundException_WhenOrderDoesNotExists()
         {
             //Arrange
