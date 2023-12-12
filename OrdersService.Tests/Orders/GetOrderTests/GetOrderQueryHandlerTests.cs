@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Moq;
 using OrdersService.Application.Common.Exceptions;
-using OrdersService.Application.Orders;
 using OrdersService.Application.Orders.Queries.GetOrder;
 using OrdersService.Domain;
 using OrdersService.Domain.Repositories;
